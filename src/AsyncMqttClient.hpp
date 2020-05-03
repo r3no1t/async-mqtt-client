@@ -15,7 +15,9 @@
 #endif
 
 #if ASYNC_TCP_SSL_ENABLED
+#ifndef ASYNC_TCP_CERTIFICATE_ENABLED
 #include <tcp_axtls.h>
+#endif
 #define SHA1_SIZE 20
 #endif
 
@@ -60,6 +62,12 @@ class AsyncMqttClient {
   AsyncMqttClient& setServer(IPAddress ip, uint16_t port);
   AsyncMqttClient& setServer(const char* host, uint16_t port);
 #if ASYNC_TCP_SSL_ENABLED
+#if ASYNC_TCP_CERTIFICATE_ENABLED
+  AsyncMqttClient& setRootCa(const char* rootca, const size_t len);
+  AsyncMqttClient& setClientCert(const char* cli_cert, const size_t len);
+  AsyncMqttClient& setClientKey(const char* cli_key, const size_t len);
+  AsyncMqttClient& setPsk(const char* psk_ident, const char* psk);
+#endif
   AsyncMqttClient& setSecure(bool secure);
   AsyncMqttClient& addServerFingerprint(const uint8_t* fingerprint);
 #endif
