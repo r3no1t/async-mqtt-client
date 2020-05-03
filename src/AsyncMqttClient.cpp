@@ -107,6 +107,28 @@ AsyncMqttClient& AsyncMqttClient::setServer(const char* host, uint16_t port) {
 }
 
 #if ASYNC_TCP_SSL_ENABLED
+#if ASYNC_TCP_CERTIFICATE_ENABLED
+AsyncMqttClient& AsyncMqttClient::setRootCa(const char* rootca, const size_t len) {
+  _client.setRootCa(rootca, len);
+  return *this;
+}
+
+AsyncMqttClient& AsyncMqttClient::setClientCert(const char* cli_cert, const size_t len) {
+  _client.setClientCert(cli_cert, len);
+  return *this;
+}
+
+AsyncMqttClient& AsyncMqttClient::setClientKey(const char* cli_key, const size_t len) {
+  _client.setClientKey(cli_key, len);
+  return *this;
+}
+
+AsyncMqttClient& AsyncMqttClient::setPsk(const char* psk_ident, const char* psk) {
+  _client.setPsk(psk_ident, psk);
+  return *this;
+}
+#endif
+
 AsyncMqttClient& AsyncMqttClient::setSecure(bool secure) {
   _secure = secure;
   return *this;
@@ -177,7 +199,7 @@ void AsyncMqttClient::_clear() {
 void AsyncMqttClient::_onConnect(AsyncClient* client) {
   (void)client;
 
-#if ASYNC_TCP_SSL_ENABLED
+#if defined (ASYNC_TCP_SSL_ENABLED) && ! defined (ASYNC_TCP_CERTIFICATE_ENABLED) 
   if (_secure && _secureServerFingerprints.size() > 0) {
     SSL* clientSsl = _client.getSSL();
 
